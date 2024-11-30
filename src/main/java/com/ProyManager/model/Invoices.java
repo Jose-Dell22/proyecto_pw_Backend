@@ -20,7 +20,7 @@ public class Invoices {
     private Projects project;
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
-    private Users client;
+    private Client client;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;

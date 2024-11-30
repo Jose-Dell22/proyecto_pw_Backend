@@ -13,6 +13,8 @@ public class Projects {
 
     @Column(name = "project_name",nullable = false)
     private String project_name;
+    @Column(name = "description",nullable = false)
+    private String description;
     @Column(name = "price",nullable = false)
     private double price;
 
@@ -20,7 +22,7 @@ public class Projects {
     private List<Suppliers> suppliers;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Users> users;
+    private List<Client> clients;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private List<Invoices> invoices;
