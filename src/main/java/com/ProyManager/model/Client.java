@@ -1,5 +1,6 @@
 package com.ProyManager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.apache.catalina.User;
@@ -25,15 +26,13 @@ public class Client {
     @Column(nullable = false)
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Projects project;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
-    private List<Invoices> invoices;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
-    private List<Payments> payments;
+    @ManyToMany
+    @JoinTable(
+            name = "client_projects",
+            joinColumns = @JoinColumn(name = "client_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private Set<Projects> projects = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -41,6 +40,7 @@ public class Client {
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     // Métodos helper para gestionar roles
@@ -52,6 +52,16 @@ public class Client {
     public void removeRole(Role role) {
         this.roles.remove(role);
         role.getClients().remove(this);
+    }
+
+    public void addProject(Projects project) {
+        this.projects.add(project);
+        project.getClients().add(this);
+    }
+
+    public void removeProject(Projects project) {
+        this.projects.remove(project);
+        project.getClients().remove(this);
     }
 
 }

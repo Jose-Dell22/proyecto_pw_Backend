@@ -4,6 +4,7 @@ import com.ProyManager.Services.ClientDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -32,9 +33,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll()
+                        auth
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite OPTIONS
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/test/all").permitAll()
+                                .requestMatchers("/api/projects/**").hasAnyRole("ADMIN", "WORKER", "USER")
                                 .anyRequest().authenticated()
                 );
 

@@ -1,30 +1,35 @@
 package com.ProyManager.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "projects")
+@Getter
+@Setter
 public class Projects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int project_id;
+    private Long id;
 
-    @Column(name = "project_name",nullable = false)
-    private String project_name;
-    @Column(name = "description",nullable = false)
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
+
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-    @Column(name = "price",nullable = false)
+
+    @Column(name = "price", nullable = false)
     private double price;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Suppliers> suppliers;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Client> clients;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Invoices> invoices;
+    @ManyToMany(mappedBy = "projects")
+    @JsonIgnore
+    private Set<Client> clients = new HashSet<>();
 
 }
